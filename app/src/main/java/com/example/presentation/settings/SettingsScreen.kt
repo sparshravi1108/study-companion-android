@@ -73,6 +73,7 @@ fun SettingsScreen(
     onBackClick: () -> Unit,
     onNavigateToProfile: () -> Unit,
     onAppearanceChanged: (ThemeMode, AnimationLevel, Float, Boolean) -> Unit,
+    onNavigateToCustomization: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     var showThemeSheet by remember { mutableStateOf(false) }
@@ -257,6 +258,15 @@ fun SettingsScreen(
                             title = "Theme Selector",
                             value = "7 Themes",
                             onClick = { showThemeSheet = true }
+                        )
+
+                        Spacer(modifier = Modifier.height(14.dp))
+
+                        SettingsClickableRow(
+                            icon = Icons.Default.Palette,
+                            title = "Dashboard Layout",
+                            value = "Customize",
+                            onClick = onNavigateToCustomization
                         )
                     }
                 }

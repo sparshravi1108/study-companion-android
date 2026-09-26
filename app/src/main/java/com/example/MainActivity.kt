@@ -77,6 +77,7 @@ class MainActivity : ComponentActivity() {
                     StudyNavHost(
                         authViewModel = authViewModel,
                         userRepository = appContainer.userRepository,
+                        dashboardRepository = appContainer.dashboardRepository,
                         networkMonitor = appContainer.networkMonitor,
                         currentUserProfile = userProfile.copy(
                             displayName = currentUser?.displayName ?: userProfile.displayName,

@@ -6,6 +6,9 @@ object FirestoreCollections {
     const val TOPICS = "topics"
     const val ROADMAPS = "roadmaps"
     const val TASKS = "tasks"
+    const val DEADLINES = "deadlines"
+    const val REVISIONS = "revisions"
+    const val SETTINGS = "settings"
     const val PROJECTS = "projects"
     const val STUDY_SESSIONS = "studySessions"
 
@@ -15,6 +18,9 @@ object FirestoreCollections {
     fun topicsPath(uid: String) = "$USERS/$uid/$TOPICS"
     fun roadmapsPath(uid: String) = "$USERS/$uid/$ROADMAPS"
     fun tasksPath(uid: String) = "$USERS/$uid/$TASKS"
+    fun deadlinesPath(uid: String) = "$USERS/$uid/$DEADLINES"
+    fun revisionsPath(uid: String) = "$USERS/$uid/$REVISIONS"
+    fun dashboardSettingsPath(uid: String) = "$USERS/$uid/$SETTINGS/dashboard"
     fun projectsPath(uid: String) = "$USERS/$uid/$PROJECTS"
     fun studySessionsPath(uid: String) = "$USERS/$uid/$STUDY_SESSIONS"
 }

@@ -6,6 +6,7 @@ sealed class Screen(val route: String) {
     data object Main : Screen("main")
     data object Profile : Screen("profile")
     data object Settings : Screen("settings")
+    data object DashboardCustomization : Screen("dashboard_customization")
 }
 
 sealed class BottomNavTab(
@@ -13,9 +14,6 @@ sealed class BottomNavTab(
     val title: String
 ) {
     data object Home : BottomNavTab("home_tab", "Home")
-    data object Subjects : BottomNavTab("subjects_tab", "Subjects")
-    data object Roadmap : BottomNavTab("roadmap_tab", "Roadmap")
-    data object More : BottomNavTab("more_tab", "More")
     data object Profile : BottomNavTab("profile_tab", "Profile")
     data object Settings : BottomNavTab("settings_tab", "Settings")
 }

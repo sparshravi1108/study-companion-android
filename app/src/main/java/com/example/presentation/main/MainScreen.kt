@@ -9,25 +9,20 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.MenuBook
-import androidx.compose.material.icons.automirrored.outlined.MenuBook
-import androidx.compose.material.icons.filled.AltRoute
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.MoreHoriz
-import androidx.compose.material.icons.outlined.AltRoute
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -47,31 +42,25 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.domain.model.AiCompanionState
 import com.example.domain.model.UserProfile
 import com.example.navigation.BottomNavTab
-import com.example.presentation.components.AiOrb
+import com.example.presentation.dashboard.DashboardViewModel
 import com.example.presentation.dashboard.HomeDashboardScreen
-import com.example.presentation.roadmap.RoadmapScreen
-import com.example.presentation.subjects.SubjectsScreen
 import com.example.ui.theme.StudyTheme
 import com.example.ui.theme.TextPrimary
-import com.example.ui.theme.TextSecondary
 import com.example.ui.theme.TextTertiary
 
 @Composable
 fun MainScreen(
     userProfile: UserProfile,
+    dashboardViewModel: DashboardViewModel,
     isOnline: Boolean,
     onNavigateToProfile: () -> Unit,
     onNavigateToSettings: () -> Unit,
+    onNavigateToCustomization: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var selectedTab by remember { mutableStateOf<BottomNavTab>(BottomNavTab.Home) }
-    var floatingAiState by remember { mutableStateOf(AiCompanionState.IDLE) }
-    var showFloatingAiDialog by remember { mutableStateOf(false) }
-
-    val extendedColors = StudyTheme.extendedColors
 
     Scaffold(
         bottomBar = {
@@ -91,7 +80,7 @@ fun MainScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(68.dp)
-                        .padding(horizontal = 8.dp),
+                        .padding(horizontal = 24.dp),
                     horizontalArrangement = Arrangement.SpaceAround,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -104,30 +93,19 @@ fun MainScreen(
                     )
 
                     BottomNavItem(
-                        title = "Subjects",
-                        selected = selectedTab == BottomNavTab.Subjects,
-                        activeIcon = Icons.AutoMirrored.Filled.MenuBook,
-                        inactiveIcon = Icons.AutoMirrored.Outlined.MenuBook,
-                        onClick = { selectedTab = BottomNavTab.Subjects }
+                        title = "Profile",
+                        selected = selectedTab == BottomNavTab.Profile,
+                        activeIcon = Icons.Default.Person,
+                        inactiveIcon = Icons.Outlined.Person,
+                        onClick = onNavigateToProfile
                     )
 
                     BottomNavItem(
-                        title = "Roadmap",
-                        selected = selectedTab == BottomNavTab.Roadmap,
-                        activeIcon = Icons.Default.AltRoute,
-                        inactiveIcon = Icons.Outlined.AltRoute,
-                        onClick = { selectedTab = BottomNavTab.Roadmap }
-                    )
-
-                    BottomNavItem(
-                        title = "More",
-                        selected = selectedTab == BottomNavTab.More,
-                        activeIcon = Icons.Default.MoreHoriz,
-                        inactiveIcon = Icons.Default.MoreHoriz,
-                        onClick = {
-                            selectedTab = BottomNavTab.More
-                            onNavigateToSettings()
-                        }
+                        title = "Settings",
+                        selected = selectedTab == BottomNavTab.Settings,
+                        activeIcon = Icons.Default.Settings,
+                        inactiveIcon = Icons.Outlined.Settings,
+                        onClick = onNavigateToSettings
                     )
                 }
             }
@@ -140,40 +118,13 @@ fun MainScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            when (selectedTab) {
-                BottomNavTab.Home -> {
-                    HomeDashboardScreen(
-                        userProfile = userProfile,
-                        isOnline = isOnline,
-                        onNavigateToSubjects = { selectedTab = BottomNavTab.Subjects },
-                        onNavigateToRoadmap = { selectedTab = BottomNavTab.Roadmap },
-                        onNavigateToProfile = onNavigateToProfile,
-                        onNavigateToSettings = onNavigateToSettings
-                    )
-                }
-                BottomNavTab.Subjects -> {
-                    SubjectsScreen(
-                        onAddSubject = { selectedTab = BottomNavTab.Home }
-                    )
-                }
-                BottomNavTab.Roadmap -> {
-                    RoadmapScreen(
-                        onCreateRoadmap = { selectedTab = BottomNavTab.Home }
-                    )
-                }
-                BottomNavTab.More,
-                BottomNavTab.Profile,
-                BottomNavTab.Settings -> {
-                    HomeDashboardScreen(
-                        userProfile = userProfile,
-                        isOnline = isOnline,
-                        onNavigateToSubjects = { selectedTab = BottomNavTab.Subjects },
-                        onNavigateToRoadmap = { selectedTab = BottomNavTab.Roadmap },
-                        onNavigateToProfile = onNavigateToProfile,
-                        onNavigateToSettings = onNavigateToSettings
-                    )
-                }
-            }
+            HomeDashboardScreen(
+                userProfile = userProfile,
+                viewModel = dashboardViewModel,
+                onNavigateToProfile = onNavigateToProfile,
+                onNavigateToSettings = onNavigateToSettings,
+                onNavigateToCustomization = onNavigateToCustomization
+            )
         }
     }
 }
@@ -187,12 +138,12 @@ private fun BottomNavItem(
     onClick: () -> Unit
 ) {
     val extendedColors = StudyTheme.extendedColors
-    val activeColor = extendedColors.glowColor
+    val activeColor = extendedColors.glowStrong
 
     Box(
         modifier = Modifier
             .testTag("bottom_nav_tab_${title.lowercase()}")
-            .size(width = 68.dp, height = 54.dp)
+            .size(width = 72.dp, height = 54.dp)
             .clip(RoundedCornerShape(12.dp))
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
